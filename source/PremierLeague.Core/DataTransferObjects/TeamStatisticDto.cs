@@ -40,5 +40,10 @@
         /// Durchschnittliche Anzahl der erhaltenen Tore pro Spiel
         /// </summary>
         public double AvgGoalsGotInTotal { get; set; }
+
+        public override string ToString()
+        {
+            return "Das ist ein Test";
+        }
     }
 }

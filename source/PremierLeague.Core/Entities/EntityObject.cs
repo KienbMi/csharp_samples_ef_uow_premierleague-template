@@ -7,11 +7,11 @@ namespace PremierLeague.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        [Timestamp]
-        public byte[] RowVersion
-        {
-            get;
-            set;
-        }
+        //[Timestamp]
+        //public byte[] RowVersion
+        //{
+        //    get;
+        //    set;
+        //}
     }
 }
