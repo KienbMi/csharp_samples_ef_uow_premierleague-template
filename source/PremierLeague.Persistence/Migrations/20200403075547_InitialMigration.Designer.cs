@@ -3,42 +3,44 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PremierLeague.Persistence;
-using System;
 
 namespace PremierLeague.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180119172939_InitialMigration")]
+    [Migration("20200403075547_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("ProductVersion", "3.1.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("PremierLeague.Core.Entities.Game", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("GuestGoals");
+                    b.Property<int>("GuestGoals")
+                        .HasColumnType("int");
 
-                    b.Property<int>("GuestTeamId");
+                    b.Property<int>("GuestTeamId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("HomeGoals");
+                    b.Property<int>("HomeGoals")
+                        .HasColumnType("int");
 
-                    b.Property<int>("HomeTeamId");
+                    b.Property<int>("HomeTeamId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Round");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<int>("Round")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -52,14 +54,13 @@ namespace PremierLeague.Persistence.Migrations
             modelBuilder.Entity("PremierLeague.Core.Entities.Team", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -71,12 +72,14 @@ namespace PremierLeague.Persistence.Migrations
                     b.HasOne("PremierLeague.Core.Entities.Team", "GuestTeam")
                         .WithMany("AwayGames")
                         .HasForeignKey("GuestTeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PremierLeague.Core.Entities.Team", "HomeTeam")
                         .WithMany("HomeGames")
                         .HasForeignKey("HomeTeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

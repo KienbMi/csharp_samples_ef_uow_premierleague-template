@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PremierLeague.Persistence.Migrations
 {
@@ -13,10 +10,9 @@ namespace PremierLeague.Persistence.Migrations
                 name: "Teams",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,14 +23,13 @@ namespace PremierLeague.Persistence.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    GuestGoals = table.Column<int>(type: "int", nullable: false),
-                    GuestTeamId = table.Column<int>(type: "int", nullable: false),
-                    HomeGoals = table.Column<int>(type: "int", nullable: false),
-                    HomeTeamId = table.Column<int>(type: "int", nullable: false),
-                    Round = table.Column<int>(type: "int", nullable: false),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Round = table.Column<int>(nullable: false),
+                    HomeTeamId = table.Column<int>(nullable: false),
+                    GuestTeamId = table.Column<int>(nullable: false),
+                    HomeGoals = table.Column<int>(nullable: false),
+                    GuestGoals = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
