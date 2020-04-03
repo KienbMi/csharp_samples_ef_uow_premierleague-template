@@ -119,22 +119,14 @@ namespace PremierLeague.ImportConsole
                     $"{teamWithBestGoalRatio.Team.Name}: {teamWithBestGoalRatio.GoalRatio} Torverhältnis");
 
                 var teamAverage = unitOfWork.Teams.GetTeamStatistics();
-                PrintResult(
+                PrintResultTable(
                      $"Team Leistung im Durchschnitt (sortiert nach durchschn. geschossene Tore pro Spiel [absteig.]:",
-                     String.Empty);
-                ConsoleTable
-                      .From(teamAverage)
-                      .Configure(o => o.NumberAlignment = Alignment.Right)
-                      .Write(Format.Alternative);
+                     teamAverage);
 
-                PrintResult(
-                     $"Team Tabelle (sortiert nach Rang):",
-                     String.Empty);
                 var premierLeagueTable = unitOfWork.Teams.GetTeamTableRow();
-                ConsoleTable
-                        .From(premierLeagueTable)
-                        .Configure(o => o.NumberAlignment = Alignment.Right)
-                        .Write(Format.Alternative);
+                PrintResultTable(
+                     $"Team Tabelle (sortiert nach Rang):",
+                     premierLeagueTable);
             }
         }
 
@@ -159,6 +151,33 @@ namespace PremierLeague.ImportConsole
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine(result);
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Erstellt eine Konsolenausgabe mit Tabelle
+        /// </summary>
+        /// <param name="caption">Enthält die Überschrift</param>
+        /// <param name="result">Enthält das ermittelte Ergebnise</param>
+        private static void PrintResultTable<T>(string caption, IEnumerable<T> table)
+        {
+            Console.WriteLine();
+
+            if (!string.IsNullOrEmpty(caption))
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(new String('=', caption.Length));
+                Console.WriteLine(caption);
+                Console.WriteLine(new String('=', caption.Length));
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+
+            ConsoleTable
+                .From<T>(table)
+                .Configure(o => o.NumberAlignment = Alignment.Right)
+                .Write(Format.Alternative);
             Console.ResetColor();
             Console.WriteLine();
         }

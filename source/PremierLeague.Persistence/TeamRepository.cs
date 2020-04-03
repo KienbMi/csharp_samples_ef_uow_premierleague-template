@@ -124,7 +124,7 @@ namespace PremierLeague.Persistence
 
         public TeamTableRowDto[] GetTeamTableRow()
         {
-            return _dbContext.Teams
+            var teams = _dbContext.Teams
                 .Select(t => new TeamTableRowDto
                 {
                     Id = t.Id,
@@ -138,18 +138,12 @@ namespace PremierLeague.Persistence
                 .AsEnumerable()
                 .OrderByDescending(t => t.Points)
                 .ThenByDescending(t => t.GoalDifference)
-                .Select((t, idx) => new TeamTableRowDto
-                {
-                    Rank = idx + 1,
-                    Id = t.Id,
-                    Name = t.Name,
-                    Matches = t.Matches,
-                    Won = t.Won,
-                    Lost = t.Lost,
-                    GoalsFor = t.GoalsFor,
-                    GoalsAgainst = t.GoalsAgainst
-                })
-                .ToArray();              
+                .ToArray();
+
+            int rank = 1;
+            Array.ForEach(teams, t => t.Rank = rank++);
+
+            return teams;
         }
     }
 }
