@@ -21,13 +21,12 @@ namespace PremierLeague.Persistence
         }
 
         public IEnumerable<Game> GetAllWithTeams()
-        {
-            return _dbContext.Games.Include(g => g.HomeTeam).Include(g => g.GuestTeam).ToList();
-        }
+         => _dbContext.Games
+                .Include(g => g.HomeTeam)
+                .Include(g => g.GuestTeam);
 
         public void Add(Game game)
-        {
-            _dbContext.Games.Add(game);
-        }
+         => _dbContext.Games.Add(game);
+
     }
 }

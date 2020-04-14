@@ -20,7 +20,7 @@ namespace PremierLeague.Core
             teams = new Dictionary<string,Team>();
             List<Game> games = new List<Game>();
 
-            if (File.Exists(filePath) == false)
+            if (!File.Exists(filePath))
             {
                 throw new Exception("File does not exist");
             }
@@ -54,9 +54,7 @@ namespace PremierLeague.Core
 
         private static Team GetTeam(string teamName)
         {
-            Team team;
-
-            if (teams.TryGetValue(teamName, out team) == false)
+            if (!teams.TryGetValue(teamName, out Team team))
             {
                 team = new Team
                 {

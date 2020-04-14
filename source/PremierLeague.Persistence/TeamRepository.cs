@@ -17,16 +17,13 @@ namespace PremierLeague.Persistence
             _dbContext = dbContext;
         }
 
-
         public IEnumerable<Team> GetAllWithGames()
-        {
-            return _dbContext.Teams.Include(t => t.HomeGames).Include(t => t.AwayGames).ToList();
-        }
+         => _dbContext.Teams
+                .Include(t => t.HomeGames)
+                .Include(t => t.AwayGames);
 
         public IEnumerable<Team> GetAll()
-        {
-            return _dbContext.Teams.OrderBy(t => t.Name).ToList();
-        }
+         => _dbContext.Teams.OrderBy(t => t.Name);
 
         public void AddRange(IEnumerable<Team> teams)
         {
@@ -34,9 +31,7 @@ namespace PremierLeague.Persistence
         }
 
         public Team Get(int teamId)
-        {
-            return _dbContext.Teams.Find(teamId);
-        }
+         => _dbContext.Teams.Find(teamId);
 
         public void Add(Team team)
         {
@@ -53,7 +48,7 @@ namespace PremierLeague.Persistence
                 })
                 .OrderByDescending(t => t.Goals)
                 .First();
-                
+
             return Tuple.Create(team.Team, team.Goals).ToValueTuple();
         }
 
@@ -102,29 +97,28 @@ namespace PremierLeague.Persistence
         }
 
         public TeamStatisticDto[] GetTeamStatistics()
-        {
-            return _dbContext.Teams
+         => _dbContext.Teams
                 .Select(t => new TeamStatisticDto
                 {
                     Name = t.Name,
                     AvgGoalsShotAtHome = t.HomeGames.Average(g => g.HomeGoals),
                     AvgGoalsShotOutwards = t.AwayGames.Average(g => g.GuestGoals),
-                    AvgGoalsShotInTotal = t.HomeGames.Select(g => new { GoalsShot = g.HomeGoals })
-                                          .Concat(t.AwayGames.Select(g => new { GoalsShot = g.GuestGoals}))
-                                          .Average(_ => _.GoalsShot),
+                    //AvgGoalsShotInTotal = t.HomeGames.Select(g => new { GoalsShot = g.HomeGoals })
+                    //                      .Concat(t.AwayGames.Select(g => new { GoalsShot = g.GuestGoals}))
+                    //                      .Average(_ => _.GoalsShot),
+                    AvgGoalsShotInTotal = (t.HomeGames.Sum(g => g.HomeGoals) + t.AwayGames.Sum(g => g.GuestGoals)) / (double)(t.HomeGames.Count() + t.AwayGames.Count()),
                     AvgGoalsGotAtHome = t.HomeGames.Average(g => g.GuestGoals),
                     AvgGoalsGotOutwards = t.AwayGames.Average(g => g.HomeGoals),
-                    AvgGoalsGotInTotal = t.HomeGames.Select(g => new { GoalsGot = g.GuestGoals })
-                                          .Concat(t.AwayGames.Select(g => new { GoalsGot = g.HomeGoals }))
-                                          .Average(_ => _.GoalsGot)
+                    //AvgGoalsGotInTotal = t.HomeGames.Select(g => new { GoalsGot = g.GuestGoals })
+                    //                      .Concat(t.AwayGames.Select(g => new { GoalsGot = g.HomeGoals }))
+                    //                      .Average(_ => _.GoalsGot)
+                    AvgGoalsGotInTotal = (t.HomeGames.Sum(g => g.GuestGoals) + t.AwayGames.Sum(g => g.HomeGoals)) / (double)(t.HomeGames.Count() + t.AwayGames.Count()),
                 })
                 .OrderByDescending(t => t.AvgGoalsShotInTotal)
                 .ToArray();
-         }
 
         public TeamTableRowDto[] GetTeamTableRow()
-        {
-            var teams = _dbContext.Teams
+         => _dbContext.Teams
                 .Select(t => new TeamTableRowDto
                 {
                     Id = t.Id,
@@ -138,12 +132,7 @@ namespace PremierLeague.Persistence
                 .AsEnumerable()
                 .OrderByDescending(t => t.Points)
                 .ThenByDescending(t => t.GoalDifference)
+                .Select((dto, idx) => { dto.Rank = idx + 1; return dto; })
                 .ToArray();
-
-            int rank = 1;
-            Array.ForEach(teams, t => t.Rank = rank++);
-
-            return teams;
-        }
     }
 }
